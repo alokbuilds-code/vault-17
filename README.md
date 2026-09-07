@@ -49,19 +49,6 @@ vault-17/
 
 ---
 
-## 🚀 Getting Started
-
-No build tools, bundlers, or local servers required.
-
-1. Clone or download the repository:
-   ```bash
-   git clone https://github.com/your-username/vault-17.git
-   ```
-2. Open `index.html` in any modern web browser:
-   * **Chrome**, **Firefox**, **Edge**, **Safari**, or **Brave**.
-3. Click **`[ ENTER VAULT CHAMBER ]`** to begin.
-
----
 
 ## 🎛️ Keyboard & Interaction Shortcuts
 
