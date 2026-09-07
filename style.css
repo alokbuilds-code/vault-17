@@ -1,0 +1,1492 @@
+/* ==========================================================================
+   VAULT 17 — INDUSTRIAL REALISM DESIGN SYSTEM
+   Visual Reference: Underground Bunkers, Heavy Steel Vaults, Analog Gauges,
+   CRT Mainframes, Mechanical Engineering Realism.
+   ========================================================================== */
+
+:root {
+  /* Bunker Darkness & Aged Steel */
+  --c-void: #040608;
+  --c-charcoal: #0B0E13;
+  --c-steel-dark: #121820;
+  --c-steel-mid: #1C2430;
+  --c-steel-light: #2A3648;
+  --c-steel-rim: #3E4E66;
+
+  /* Typography Colors */
+  --c-text-primary: #E2E8F0;
+  --c-text-secondary: #94A3B8;
+  --c-text-dim: #64748B;
+  --c-stencil: #CBD5E1;
+
+  /* Restrained Signal Accents */
+  --c-amber: #F59E0B;
+  --c-amber-glow: rgba(245, 158, 11, 0.4);
+  --c-amber-dim: rgba(245, 158, 11, 0.12);
+
+  --c-red-alarm: #EF4444;
+  --c-red-glow: rgba(239, 68, 68, 0.4);
+
+  --c-green-crt: #22C55E;
+  --c-green-glow: rgba(34, 197, 94, 0.35);
+
+  /* Fonts */
+  --f-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'IBM Plex Mono', 'Space Mono', monospace;
+
+  /* Mechanical Shadows & Bevels */
+  --shadow-plate: inset 0 1px 2px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.85);
+  --b-plate: 1px solid rgba(255, 255, 255, 0.1);
+  --b-heavy: 2px solid #07090C;
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--c-void);
+  color: var(--c-text-primary);
+  font-family: var(--f-sans);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: var(--f-mono);
+  letter-spacing: -0.01em;
+}
+
+.font-bold { font-weight: 700; }
+.text-amber { color: var(--c-amber) !important; }
+.text-critical { color: var(--c-red-alarm) !important; }
+.text-green { color: var(--c-green-crt) !important; }
+.text-dim { color: var(--c-text-dim) !important; }
+
+/* ==========================================================================
+   SCREEN EFFECTS (GRAIN, SCANLINES, VIGNETTE)
+   ========================================================================== */
+.screen-fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.fx-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.22) 0px,
+    rgba(0, 0, 0, 0.22) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  opacity: 0.65;
+}
+
+.fx-vignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.92), inset 0 0 50px rgba(0, 0, 0, 0.98);
+}
+
+.fx-grain {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: 0.4;
+}
+
+body.no-grain .screen-fx {
+  display: none !important;
+}
+
+/* Jolt Shake on Heavy Clunk */
+.screen-jolt {
+  animation: vaultJolt 400ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes vaultJolt {
+  10%, 90% { transform: translate3d(-3px, 2px, 0); }
+  20%, 80% { transform: translate3d(4px, -3px, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 3px, 0); }
+  40%, 60% { transform: translate3d(2px, -2px, 0); }
+}
+
+/* ==========================================================================
+   01. TITLE SCREEN
+   ========================================================================== */
+.game-view {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 10;
+}
+
+.game-view.active-view {
+  display: flex;
+}
+
+#title-screen {
+  background-color: var(--c-void);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.title-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(4, 6, 8, 0.8), rgba(4, 6, 8, 0.95)),
+    url('https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  filter: contrast(125%) brightness(55%) grayscale(70%);
+  animation: slowZoomTitle 28s infinite alternate ease-in-out;
+}
+
+@keyframes slowZoomTitle {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.04); }
+}
+
+.title-container {
+  position: relative;
+  z-index: 2;
+  width: 580px;
+  max-width: 90vw;
+  background: rgba(11, 14, 19, 0.9);
+  border: 1px solid var(--c-steel-light);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95);
+  padding: 42px 38px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title-badge-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--c-amber);
+  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+}
+
+.badge-sep {
+  color: var(--c-text-dim);
+}
+
+.title-headline {
+  font-family: var(--f-mono);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--c-text-primary);
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.12);
+}
+
+.title-subtext {
+  font-size: 12.5px;
+  color: var(--c-text-muted);
+  margin-top: 8px;
+  margin-bottom: 34px;
+  letter-spacing: 0.04em;
+}
+
+.title-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.btn-vault {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-light);
+  color: var(--c-text-primary);
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 13px 18px;
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: all 140ms ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-vault:hover:not(:disabled) {
+  background: var(--c-steel-mid);
+  border-color: var(--c-amber);
+  color: #FFFFFF;
+  box-shadow: 0 0 14px var(--c-amber-dim);
+}
+
+.btn-vault:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-vault:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-vault-primary {
+  border-color: var(--c-amber);
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--c-amber);
+}
+
+.btn-vault-primary:hover {
+  background: var(--c-amber) !important;
+  color: #000000 !important;
+}
+
+.btn-bracket {
+  color: var(--c-text-dim);
+}
+
+.title-footer-meta {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--c-text-dim);
+}
+
+/* ==========================================================================
+   02. CINEMATIC INTRO OVERLAY
+   ========================================================================== */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 600ms ease, visibility 600ms ease;
+}
+
+.intro-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.intro-text-box {
+  width: 520px;
+  max-width: 85vw;
+  text-align: left;
+  line-height: 2.2;
+  font-size: 13.5px;
+}
+
+.intro-step {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 400ms ease;
+}
+
+.intro-step.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   03. MAIN GAMEPLAY INTERFACE
+   ========================================================================== */
+.main-game-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-void);
+  z-index: 5;
+}
+
+/* Minimal Topbar */
+.vault-topbar {
+  height: 40px;
+  background: var(--c-charcoal);
+  border-bottom: 1px solid var(--c-steel-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.topbar-left, .topbar-center, .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-id {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-text-primary);
+  letter-spacing: 0.05em;
+}
+
+.topbar-sep {
+  color: var(--c-steel-light);
+}
+
+.topbar-facility {
+  font-size: 10.5px;
+  color: var(--c-text-dim);
+}
+
+.topbar-clock {
+  font-size: 12px;
+  color: var(--c-stencil);
+}
+
+.topbar-lock-summary {
+  font-size: 10.5px;
+  color: var(--c-amber);
+}
+
+.btn-topbar-tool {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-mid);
+  color: var(--c-text-muted);
+  font-size: 10px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.btn-topbar-tool:hover {
+  color: var(--c-text-primary);
+  border-color: var(--c-amber);
+}
+
+/* Full-Screen Vault Chamber Stage */
+.vault-chamber-stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chamber-photo-layer {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=1800&q=80');
+  background-size: cover;
+  background-position: center 40%;
+  filter: contrast(125%) brightness(62%) grayscale(60%);
+  transition: filter 400ms ease;
+}
+
+.chamber-lighting-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 49% 49%, rgba(245, 158, 11, 0.04) 0%, rgba(4, 6, 8, 0.8) 75%);
+  transition: background 400ms ease;
+}
+
+/* Contextual Hotspots Layer */
+.chamber-hotspots-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.vault-hotspot {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translate(-50%, -50%);
+  transition: transform 150ms ease;
+}
+
+.vault-hotspot:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.hotspot-crosshair {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--c-amber);
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.2);
+  display: inline-block;
+  box-shadow: 0 0 10px var(--c-amber-glow);
+  animation: crosshairPulse 2.2s infinite ease-in-out;
+}
+
+@keyframes crosshairPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.22); opacity: 1; }
+}
+
+.hotspot-ring {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--c-amber);
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 16px var(--c-amber-glow);
+  display: inline-block;
+  animation: ringSpin 10s infinite linear;
+}
+
+@keyframes ringSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.hotspot-label {
+  background: rgba(11, 14, 19, 0.9);
+  border: 1px solid var(--c-steel-light);
+  color: var(--c-text-primary);
+  font-size: 10px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+  transition: all 150ms ease;
+}
+
+.vault-hotspot:hover .hotspot-label {
+  opacity: 1;
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+  box-shadow: 0 0 12px var(--c-amber-dim);
+}
+
+/* Ambient HUD Toast */
+.chamber-status-hud {
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(11, 14, 19, 0.94);
+  border: 1px solid var(--c-steel-light);
+  padding: 8px 18px;
+  font-size: 11px;
+  color: var(--c-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 15;
+}
+
+.hud-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-amber);
+  box-shadow: 0 0 8px var(--c-amber-glow);
+}
+
+/* Bottom Telemetry Bar */
+.chamber-bottom-bar {
+  margin-top: auto;
+  height: 44px;
+  background: var(--c-charcoal);
+  border-top: 1px solid var(--c-steel-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 10px;
+  z-index: 20;
+}
+
+.lock-status-pills {
+  display: flex;
+  gap: 18px;
+}
+
+.lock-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-mid);
+  padding: 4px 10px;
+}
+
+.pill-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.led-amber { background: var(--c-amber); box-shadow: 0 0 6px var(--c-amber-glow); }
+.led-red { background: var(--c-red-alarm); box-shadow: 0 0 6px var(--c-red-glow); }
+.led-green { background: var(--c-green-crt); box-shadow: 0 0 6px var(--c-green-glow); }
+
+/* ==========================================================================
+   04. INSPECTION MODAL OVERLAYS (PHYSICAL STATIONS)
+   ========================================================================== */
+.inspection-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.inspection-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inspection-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 8, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+.station-card {
+  position: relative;
+  z-index: 2;
+  width: 780px;
+  max-width: 95vw;
+  max-height: 90vh;
+  background: #0E131A;
+  border: 1px solid var(--c-steel-light);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-card-expanded {
+  width: 860px;
+}
+
+.station-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  background: var(--c-steel-dark);
+  border-bottom: 1px solid var(--c-steel-light);
+}
+
+.station-code {
+  font-size: 9px;
+  color: var(--c-amber);
+  letter-spacing: 0.1em;
+}
+
+.station-title {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text-primary);
+  letter-spacing: 0.04em;
+}
+
+.btn-station-close {
+  background: none;
+  border: 1px solid var(--c-steel-mid);
+  color: var(--c-text-muted);
+  font-size: 11px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.btn-station-close:hover {
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+}
+
+.station-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(90vh - 65px);
+}
+
+.station-grid {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 24px;
+}
+
+.station-notes-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.note-card {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-mid);
+  padding: 14px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.note-tag {
+  display: block;
+  font-weight: 700;
+  color: var(--c-text-primary);
+  margin-bottom: 6px;
+  letter-spacing: 0.06em;
+}
+
+/* ==========================================================================
+   STATION 01: PNEUMATIC PRESSURE MANIFOLD
+   ========================================================================== */
+.pressure-manifold-chassis {
+  background: #141B24;
+  border: 2px solid #07090D;
+  box-shadow: var(--shadow-plate);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.analog-gauge-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.gauge-dial-face {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #E2E8F0 0%, #94A3B8 100%);
+  border: 4px solid #1E293B;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.6), 0 6px 16px rgba(0, 0, 0, 0.7);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-needle {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  width: 2.5px;
+  height: 54px;
+  background: #DC2626;
+  transform-origin: bottom center;
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.gauge-center-rivet {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1E293B;
+  border: 2px solid #000000;
+  z-index: 2;
+}
+
+.gauge-digital-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.gauge-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--c-text-primary);
+}
+
+.gauge-unit {
+  font-size: 10px;
+  color: var(--c-text-dim);
+}
+
+/* 3 Rotary Valves */
+.valves-cluster {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.valve-box {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-mid);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.valve-label {
+  font-size: 10px;
+  color: var(--c-text-dim);
+}
+
+.valve-wheel {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #334155 0%, #0F172A 100%);
+  border: 3px solid #020617;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  position: relative;
+  cursor: pointer;
+  transition: transform 200ms ease;
+}
+
+.valve-wheel:hover {
+  filter: brightness(1.15);
+}
+
+.valve-wheel:active {
+  transform: scale(0.96);
+}
+
+.wheel-spoke {
+  position: absolute;
+  background: #475569;
+}
+
+.spoke-v {
+  top: 6px;
+  bottom: 6px;
+  left: calc(50% - 2px);
+  width: 4px;
+}
+
+.spoke-h {
+  left: 6px;
+  right: 6px;
+  top: calc(50% - 2px);
+  height: 4px;
+}
+
+.wheel-rim {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.valve-state {
+  font-size: 9.5px;
+  color: var(--c-text-muted);
+}
+
+.bleed-lever-block {
+  width: 100%;
+}
+
+.btn-bleed-lever {
+  width: 100%;
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-light);
+  color: var(--c-text-primary);
+  padding: 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.btn-bleed-lever:hover {
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+}
+
+/* ==========================================================================
+   STATION 02: ELECTRICAL SUBSTATION
+   ========================================================================== */
+.breaker-panel-chassis {
+  background: #141B24;
+  border: 2px solid #07090D;
+  box-shadow: var(--shadow-plate);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.analog-voltmeter-unit {
+  background: #0B0F14;
+  border: 1px solid var(--c-steel-mid);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voltmeter-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.volt-readout {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-green-crt);
+  text-shadow: 0 0 8px var(--c-green-glow);
+}
+
+.volt-target {
+  font-size: 10.5px;
+}
+
+.volt-needle-track {
+  height: 12px;
+  background: #1E293B;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.volt-needle {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 3px;
+  background: #EF4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.8);
+  transition: left 250ms ease;
+}
+
+.knife-switch-housing {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-light);
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.knife-label {
+  font-size: 10px;
+  color: var(--c-text-dim);
+}
+
+.knife-blade-btn {
+  background: #090D12;
+  border: 1px solid var(--c-amber);
+  color: var(--c-amber);
+  padding: 6px 14px;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.knife-blade-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 10px var(--c-amber-glow);
+}
+
+.breakers-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brk-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--c-steel-dark);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 8px 12px;
+  font-size: 10.5px;
+}
+
+.industrial-toggle-btn {
+  background: #090D12;
+  border: 1px solid var(--c-steel-mid);
+  color: var(--c-text-muted);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 4px 12px;
+  cursor: pointer;
+  min-width: 60px;
+}
+
+.industrial-toggle-btn.active {
+  border-color: var(--c-green-crt);
+  color: var(--c-green-crt);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+/* ==========================================================================
+   STATION 03: CONCENTRIC TUMBLER LOCK
+   ========================================================================== */
+.tumbler-chassis {
+  background: #141B24;
+  border: 2px solid #07090D;
+  box-shadow: var(--shadow-plate);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tumbler-dials-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.rotary-dial-card {
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-mid);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dial-card-title {
+  font-size: 10px;
+  color: var(--c-text-dim);
+}
+
+.dial-wheel-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #475569 0%, #1E293B 100%);
+  border: 4px solid #0B0E14;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dial-index-marker {
+  position: absolute;
+  top: 4px;
+  color: var(--c-amber);
+  font-size: 10px;
+}
+
+.dial-center-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c-text-primary);
+}
+
+.dial-stepper-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-step {
+  flex: 1;
+  background: #090D12;
+  border: 1px solid var(--c-steel-light);
+  color: var(--c-text-primary);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 6px 4px;
+  cursor: pointer;
+}
+
+.btn-step:hover {
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+}
+
+.tumbler-action-box {
+  width: 100%;
+}
+
+.btn-industrial-lever {
+  width: 100%;
+  background: var(--c-steel-dark);
+  border: 1px solid var(--c-steel-light);
+  color: var(--c-text-primary);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.btn-industrial-lever:hover {
+  border-color: var(--c-amber);
+}
+
+.tumbler-pin-indicator {
+  font-size: 9.5px;
+}
+
+.tumbler-button-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   STATION 04: FACILITY CRT ARCHIVE TERMINAL
+   ========================================================================== */
+.terminal-body-layout {
+  padding: 18px;
+}
+
+.crt-monitor-frame {
+  background: #070A0F;
+  border: 3px solid #1E293B;
+  padding: 16px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+.crt-glass {
+  background: #040806;
+  border: 2px solid #0B1E13;
+  padding: 20px;
+  min-height: 380px;
+  position: relative;
+  overflow: hidden;
+  color: var(--c-green-crt);
+  text-shadow: 0 0 6px var(--c-green-glow);
+}
+
+.crt-scanline-mesh {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.3) 0px,
+    rgba(0, 0, 0, 0.3) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+.terminal-os-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  font-size: 10px;
+}
+
+.terminal-split-view {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  min-height: 280px;
+}
+
+.terminal-file-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px dashed rgba(34, 197, 94, 0.2);
+  padding-right: 12px;
+}
+
+.tree-title {
+  font-size: 9.5px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.term-file-link {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--c-green-crt);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  text-align: left;
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.term-file-link:hover, .term-file-link.active {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.terminal-viewer-window {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.viewer-header {
+  font-size: 11px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+  padding-bottom: 4px;
+}
+
+.viewer-body {
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre-line;
+  max-height: 230px;
+  overflow-y: auto;
+}
+
+.terminal-os-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(34, 197, 94, 0.3);
+  padding-top: 8px;
+  font-size: 9.5px;
+}
+
+.cursor-blink {
+  animation: crtBlink 900ms infinite;
+}
+
+@keyframes crtBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ==========================================================================
+   STATION 05: STAMPED BRASS SPECIFICATION PLACARD
+   ========================================================================== */
+.brass-placard-chassis {
+  background: linear-gradient(135deg, #423522 0%, #2B2113 100%);
+  border: 3px solid #1A1308;
+  box-shadow: var(--shadow-plate);
+  padding: 32px 28px;
+  position: relative;
+  color: #E2D9C8;
+}
+
+.placard-rivet {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #1A1308;
+  border: 1px solid #785A32;
+}
+
+.r-tl { top: 12px; left: 12px; }
+.r-tr { top: 12px; right: 12px; }
+.r-bl { bottom: 12px; left: 12px; }
+.r-br { bottom: 12px; right: 12px; }
+
+.placard-engraving {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.placard-headline {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.placard-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.placard-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 11px;
+}
+
+.spec-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spec-lbl {
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+.placard-warning-stamp {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px dashed rgba(220, 38, 38, 0.5);
+  padding: 10px 12px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   STATION 06: MAIN VAULT WHEEL & FINAL RESOLUTION
+   ========================================================================== */
+.main-wheel-chassis {
+  background: #141B24;
+  border: 2px solid #07090D;
+  box-shadow: var(--shadow-plate);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.center-massive-wheel-wrap {
+  position: relative;
+}
+
+.massive-steel-wheel {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #334155 0%, #0F172A 100%);
+  border: 6px solid #05080C;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.massive-steel-wheel:hover {
+  filter: brightness(1.15);
+}
+
+.massive-spoke {
+  position: absolute;
+  background: #475569;
+  width: 6px;
+  height: 100%;
+}
+
+.ms-1 { transform: rotate(0deg); }
+.ms-2 { transform: rotate(60deg); }
+.ms-3 { transform: rotate(120deg); }
+
+.massive-wheel-hub {
+  position: relative;
+  z-index: 2;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: #1E293B;
+  border: 3px solid #05080C;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.hub-status-text {
+  font-size: 8px;
+  color: var(--c-amber);
+  margin-top: 2px;
+}
+
+.final-decisions-strip {
+  width: 100%;
+}
+
+.decision-actions-grid {
+  display: flex;
+  gap: 12px;
+}
+
+.decision-actions-grid button {
+  flex: 1;
+}
+
+.lock-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 10px;
+}
+
+/* ==========================================================================
+   05. ENDINGS, SETTINGS & CREDITS MODALS
+   ========================================================================== */
+.ending-modal, .settings-modal, .credits-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+.ending-modal.active, .settings-modal.active, .credits-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ending-backdrop, .settings-backdrop, .credits-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.94);
+}
+
+.ending-card, .settings-card, .credits-card {
+  position: relative;
+  z-index: 2;
+  width: 600px;
+  max-width: 90vw;
+  background: #0E131A;
+  border: 1px solid var(--c-steel-light);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.95);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ending-tag {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--c-amber);
+}
+
+.ending-title {
+  font-size: 24px;
+  color: var(--c-text-primary);
+  line-height: 1.1;
+}
+
+.ending-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ending-body {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--c-text-secondary);
+}
+
+.ending-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: #080C12;
+  border: 1px solid var(--c-steel-mid);
+  padding: 12px;
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-lbl {
+  font-size: 8.5px;
+  color: var(--c-text-dim);
+}
+
+.stat-val {
+  font-size: 13px;
+}
+
+.ending-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.ending-actions button {
+  flex: 1;
+}
+
+/* Settings Form */
+.settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cfg-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--c-steel-mid);
+  padding-bottom: 10px;
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--c-steel-mid);
+  padding-top: 14px;
+}
+
+/* Responsive Breakpoint */
+@media (max-width: 900px) {
+  .station-grid {
+    grid-template-columns: 1fr;
+  }
+  .terminal-split-view {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAULT 17 — Restricted Industrial Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="vault-body">
+
+  
+  <div class="screen-fx" id="screen-fx" aria-hidden="true">
+    <div class="fx-scanlines"></div>
+    <div class="fx-vignette"></div>
+    <div class="fx-grain"></div>
+  </div>
+
+  <!-- ==========================================================================
+       01. TITLE SCREEN
+       ========================================================================== -->
+  <section id="title-screen" class="game-view active-view" aria-label="Title Screen">
+    <div class="title-bg"></div>
+    <div class="title-container">
+      <div class="title-badge-strip font-mono">
+        <span class="badge-tag">FACILITY 17</span>
+        <span class="badge-sep">//</span>
+        <span class="badge-tag">LEVEL -03 SUB-BASEMENT</span>
+      </div>
+      <h1 class="title-headline">VAULT 17</h1>
+      <p class="title-subtext font-mono">RESTRICTED INDUSTRIAL ARCHIVE &bull; STATUS: SEALED</p>
+
+      <div class="title-menu">
+        <button id="btn-title-enter" class="btn-vault btn-vault-primary">
+          <span class="btn-bracket">[</span> ENTER VAULT CHAMBER <span class="btn-bracket">]</span>
+        </button>
+        <button id="btn-title-continue" class="btn-vault" disabled>
+          <span class="btn-bracket">[</span> RESUME ARCHIVE DECRYPTION <span class="btn-bracket">]</span>
+        </button>
+        <button id="btn-title-settings" class="btn-vault">
+          <span class="btn-bracket">[</span> TERMINAL CONFIGURATION <span class="btn-bracket">]</span>
+        </button>
+        <button id="btn-title-credits" class="btn-vault">
+          <span class="btn-bracket">[</span> SYSTEM SPECIFICATION / CREDITS <span class="btn-bracket">]</span>
+        </button>
+      </div>
+
+      <div class="title-footer-meta font-mono">
+        <span>SECURITY DESIGNATION: HIGH HEAVY MASS ENCLOSURE</span>
+        <span>CONTAINMENT PROTOCOL: ACTIVE</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       02. CINEMATIC INTRO SEQUENCE
+       ========================================================================== -->
+  <div id="intro-overlay" class="intro-overlay" aria-hidden="true">
+    <div class="intro-text-box font-mono">
+      <div class="intro-step" id="intro-step-1">03:17 AM</div>
+      <div class="intro-step" id="intro-step-2">FACILITY 17 // LOWER SUB-LEVEL -03</div>
+      <div class="intro-step" id="intro-step-3">PRIMARY ACCESS SYSTEM: OFFLINE</div>
+      <div class="intro-step text-warning" id="intro-step-4">HYDRAULIC PRESSURE ISOLATED IN MAIN CYLINDER</div>
+      <div class="intro-step" id="intro-step-5">VAULT 17 &bull; LOCK STATUS: FULLY ENGAGED</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       03. MAIN GAMEPLAY INTERFACE
+       ========================================================================== -->
+  <div id="main-game" class="main-game-wrapper">
+
+    <!-- Minimal Industrial Topbar Header -->
+    <header class="vault-topbar">
+      <div class="topbar-left font-mono">
+        <span class="topbar-id">VAULT 17</span>
+        <span class="topbar-sep">/</span>
+        <span class="topbar-facility">FACILITY 17 &bull; LEVEL -03</span>
+      </div>
+
+      <div class="topbar-center font-mono">
+        <span class="topbar-clock" id="topbar-clock">03:17 AM</span>
+        <span class="topbar-sep">|</span>
+        <span class="topbar-lock-summary" id="topbar-lock-summary">LOCKS ENGAGED: 3 / 3</span>
+      </div>
+
+      <div class="topbar-right">
+        <button id="btn-topbar-settings" class="btn-topbar-tool font-mono" title="Settings / Configuration">CONFIG</button>
+      </div>
+    </header>
+
+    <!-- Main Full-Screen Photographic Vault Environment -->
+    <main class="vault-chamber-stage" id="vault-chamber-stage">
+      <div class="chamber-photo-layer" id="chamber-photo-layer"></div>
+      <div class="chamber-lighting-layer" id="chamber-lighting-layer"></div>
+
+      <!-- Contextual Hotspot Markers -->
+      <div class="chamber-hotspots-layer" id="chamber-hotspots-layer">
+        <!-- 01: Pressure System -->
+        <button class="vault-hotspot" id="hs-pressure" style="top: 56%; left: 24%;" title="Inspect Hydraulic Pressure System">
+          <span class="hotspot-crosshair"></span>
+          <span class="hotspot-label font-mono">[01] PRESSURE MANIFOLD</span>
+        </button>
+
+        <!-- 02: Breaker Panel -->
+        <button class="vault-hotspot" id="hs-breakers" style="top: 48%; left: 14%;" title="Inspect High-Voltage Breaker Panel">
+          <span class="hotspot-crosshair"></span>
+          <span class="hotspot-label font-mono">[02] SUBSTATION BREAKERS</span>
+        </button>
+
+        <!-- 03: Tumbler Mechanism -->
+        <button class="vault-hotspot" id="hs-tumbler" style="top: 52%; left: 66%;" title="Inspect Concentric Tumbler Locks">
+          <span class="hotspot-crosshair"></span>
+          <span class="hotspot-label font-mono">[03] CONCENTRIC TUMBLER</span>
+        </button>
+
+        <!-- 04: Archive Terminal -->
+        <button class="vault-hotspot" id="hs-terminal" style="top: 65%; left: 82%;" title="Access Facility Archive Terminal">
+          <span class="hotspot-crosshair"></span>
+          <span class="hotspot-label font-mono">[04] ARCHIVE TERMINAL</span>
+        </button>
+
+        <!-- 05: Maintenance Stamped Plate -->
+        <button class="vault-hotspot" id="hs-plate" style="top: 36%; left: 33%;" title="Examine Stamped Specification Placard">
+          <span class="hotspot-crosshair"></span>
+          <span class="hotspot-label font-mono">[05] SPECIFICATION PLATE</span>
+        </button>
+
+        <!-- 06: Main Vault Handwheel -->
+        <button class="vault-hotspot hotspot-main" id="hs-wheel" style="top: 49%; left: 49%;" title="Operate Central Vault Handwheel">
+          <span class="hotspot-ring"></span>
+          <span class="hotspot-label font-mono">[06] MAIN VAULT WHEEL</span>
+        </button>
+      </div>
+
+      <!-- Real-Time Ambient Objective Toast -->
+      <div class="chamber-status-hud font-mono" id="chamber-status-hud">
+        <span class="hud-dot"></span>
+        <span id="hud-status-text">INITIAL DIRECTIVE: INSPECT SPECIFICATION PLATE &amp; RESTORE EQUALIZED PRESSURE.</span>
+      </div>
+
+      <!-- Minimal Bottom Telemetry Bar -->
+      <footer class="chamber-bottom-bar font-mono">
+        <div class="lock-status-pills">
+          <div class="lock-pill" id="pill-lock-1">
+            <span class="pill-led led-amber"></span>
+            <span>HYDRAULIC: <strong class="text-amber" id="txt-lock-1">LOCKED (0 PSI)</strong></span>
+          </div>
+          <div class="lock-pill" id="pill-lock-2">
+            <span class="pill-led led-red"></span>
+            <span>SOLENOID: <strong class="text-critical" id="txt-lock-2">NO VOLTAGE</strong></span>
+          </div>
+          <div class="lock-pill" id="pill-lock-3">
+            <span class="pill-led led-red"></span>
+            <span>TUMBLER: <strong class="text-critical" id="txt-lock-3">MISALIGNED</strong></span>
+          </div>
+          <div class="lock-pill" id="pill-lock-main">
+            <span class="pill-led led-amber"></span>
+            <span>MAIN SEAL: <strong class="text-amber" id="txt-lock-main">DOG CLAMPED</strong></span>
+          </div>
+        </div>
+        <div class="hint-tip text-dim">
+          CLICK HIGHLIGHTED COMPONENTS TO INSPECT DETAILED PHYSICAL EQUIPMENT.
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       04. INSPECTION WORKSTATION OVERLAYS
+       ========================================================================== -->
+
+  <!-- STATION 01: PNEUMATIC PRESSURE SYSTEM -->
+  <div class="inspection-overlay" id="station-pressure" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 01 // PNEUMATICS</span>
+          <h3 class="station-title">HYDRAULIC PRESSURE MANIFOLD</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-pressure">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body station-grid">
+        <!-- Mechanical Gauges & Valves Interface -->
+        <div class="station-interactive-panel">
+          <div class="pressure-manifold-chassis">
+            <!-- Analog Pressure Gauge Dial -->
+            <div class="analog-gauge-unit font-mono">
+              <div class="gauge-dial-face">
+                <div class="gauge-needle" id="pressure-needle" style="transform: rotate(-120deg);"></div>
+                <div class="gauge-center-rivet"></div>
+                <div class="gauge-target-arc"></div>
+              </div>
+              <div class="gauge-digital-readout">
+                <span class="gauge-num" id="gauge-pressure-val">0</span>
+                <span class="gauge-unit">PSI &bull; CYLINDER B</span>
+              </div>
+            </div>
+
+            <!-- 3 Rotary Valves (Alpha, Beta, Gamma) -->
+            <div class="valves-cluster font-mono">
+              <div class="valve-box">
+                <span class="valve-label">VALVE [A]</span>
+                <button class="valve-wheel" id="valve-btn-a" data-valve="A" title="Click to Rotate Valve Alpha">
+                  <span class="wheel-spoke spoke-v"></span>
+                  <span class="wheel-spoke spoke-h"></span>
+                  <span class="wheel-rim"></span>
+                </button>
+                <span class="valve-state" id="valve-state-a">CLOSED</span>
+              </div>
+
+              <div class="valve-box">
+                <span class="valve-label">VALVE [B]</span>
+                <button class="valve-wheel" id="valve-btn-b" data-valve="B" title="Click to Rotate Valve Beta">
+                  <span class="wheel-spoke spoke-v"></span>
+                  <span class="wheel-spoke spoke-h"></span>
+                  <span class="wheel-rim"></span>
+                </button>
+                <span class="valve-state" id="valve-state-b">CLOSED</span>
+              </div>
+
+              <div class="valve-box">
+                <span class="valve-label">VALVE [C]</span>
+                <button class="valve-wheel" id="valve-btn-c" data-valve="C" title="Click to Rotate Valve Gamma">
+                  <span class="wheel-spoke spoke-v"></span>
+                  <span class="wheel-spoke spoke-h"></span>
+                  <span class="wheel-rim"></span>
+                </button>
+                <span class="valve-state" id="valve-state-c">CLOSED</span>
+              </div>
+            </div>
+
+            <!-- Equalization Bleed Lever -->
+            <div class="bleed-lever-block font-mono">
+              <button class="btn-bleed-lever" id="btn-bleed-lever">
+                <span class="lever-handle-bar"></span>
+                <span id="bleed-lever-text">DECOMPRESS HYDRAULIC RETRACTOR PIN</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reference Notes Sidebar -->
+        <div class="station-notes-sidebar font-mono">
+          <div class="note-card">
+            <span class="note-tag">OPERATIONAL SPECIFICATION:</span>
+            <p>Hydraulic locking pins require precisely <strong>47 PSI</strong> to disengage the upper retaining bar. Exceeding 60 PSI triggers emergency blow-off venting.</p>
+          </div>
+          <div class="note-card note-clue">
+            <span class="note-tag text-amber">MANIFOLD SEQUENCE RULE:</span>
+            <p>Observe the flow stamping on the Specification Placard before rotating supply valves.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION 02: ELECTRICAL BREAKER SUBSTATION -->
+  <div class="inspection-overlay" id="station-breakers" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 02 // ELECTRICAL</span>
+          <h3 class="station-title">HIGH-VOLTAGE BREAKER SUBSTATION</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-breakers">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body station-grid">
+        <div class="station-interactive-panel">
+          <div class="breaker-panel-chassis font-mono">
+            <!-- Voltmeter -->
+            <div class="analog-voltmeter-unit">
+              <div class="voltmeter-display">
+                <span class="volt-readout" id="volt-readout-num">0 V</span>
+                <span class="volt-target text-amber">TARGET: 220V (&plusmn;5V)</span>
+              </div>
+              <div class="volt-needle-track">
+                <div class="volt-needle" id="volt-needle" style="left: 0%;"></div>
+                <div class="volt-danger-zone" style="left: 88%; width: 12%;"></div>
+              </div>
+            </div>
+
+            <!-- Heavy Knife Switch -->
+            <div class="knife-switch-housing">
+              <span class="knife-label">SUB-FEED POWER BUS (ISOLATION)</span>
+              <button class="knife-blade-btn" id="knife-switch-btn">
+                <span class="knife-hinge"></span>
+                <span class="knife-blade-bar"></span>
+                <span class="knife-status-tag" id="knife-status-tag">BUS DISCONNECTED</span>
+              </button>
+            </div>
+
+            <!-- Subsystem Toggle Breakers -->
+            <div class="breakers-matrix">
+              <div class="brk-item">
+                <span class="brk-name">SUB-01: HYDRAULIC HEATER (50V)</span>
+                <button class="industrial-toggle-btn" id="brk-toggle-1" data-v="50">OFF</button>
+              </div>
+              <div class="brk-item">
+                <span class="brk-name">SUB-02: LOGIC INTERLOCK (120V)</span>
+                <button class="industrial-toggle-btn" id="brk-toggle-2" data-v="120">OFF</button>
+              </div>
+              <div class="brk-item">
+                <span class="brk-name">SUB-03: AUX SOLENOID COIL (100V)</span>
+                <button class="industrial-toggle-btn" id="brk-toggle-3" data-v="100">OFF</button>
+              </div>
+              <div class="brk-item">
+                <span class="brk-name">SUB-04: PERIMETER SEAL (80V)</span>
+                <button class="industrial-toggle-btn" id="brk-toggle-4" data-v="80">OFF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="station-notes-sidebar font-mono">
+          <div class="note-card text-warning">
+            <span class="note-tag">VOLTAGE LIMITATION:</span>
+            <p>The central tumbler solenoid requires exactly <strong>220 Volts</strong>. Delivering over 240 Volts will burn out the secondary relay and trip the main bus.</p>
+          </div>
+          <div class="note-card">
+            <span class="note-tag">CIRCUIT LOAD GUIDELINES:</span>
+            <p>Combine only the circuits necessary for logic computation and lock release.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION 03: CONCENTRIC TUMBLER LOCK -->
+  <div class="inspection-overlay" id="station-tumbler" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 03 // MECHANICAL</span>
+          <h3 class="station-title">CONCENTRIC BRASS COMBINATION TUMBLER</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-tumbler">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body station-grid">
+        <div class="station-interactive-panel">
+          <div class="tumbler-chassis font-mono">
+            <div class="tumbler-dials-display">
+              <!-- Dial 1 (Tens / Hour Index) -->
+              <div class="rotary-dial-card">
+                <span class="dial-card-title">PRIMARY DIAL [I]</span>
+                <div class="dial-wheel-ring" id="tumbler-wheel-1">
+                  <div class="dial-index-marker">▲</div>
+                  <span class="dial-center-val" id="tumbler-val-1">00</span>
+                </div>
+                <div class="dial-stepper-buttons">
+                  <button class="btn-step" id="btn-dial1-dec">&lt;&lt; -1</button>
+                  <button class="btn-step" id="btn-dial1-inc">+1 &gt;&gt;</button>
+                </div>
+              </div>
+
+              <!-- Dial 2 (Units / Minute Index) -->
+              <div class="rotary-dial-card">
+                <span class="dial-card-title">SECONDARY DIAL [II]</span>
+                <div class="dial-wheel-ring" id="tumbler-wheel-2">
+                  <div class="dial-index-marker">▲</div>
+                  <span class="dial-center-val" id="tumbler-val-2">00</span>
+                </div>
+                <div class="dial-stepper-buttons">
+                  <button class="btn-step" id="btn-dial2-dec">&lt;&lt; -1</button>
+                  <button class="btn-step" id="btn-dial2-inc">+1 &gt;&gt;</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tumbler Alignment Engagement Lever -->
+            <div class="tumbler-action-box font-mono">
+              <button class="btn-industrial-lever" id="btn-tumbler-release">
+                <span class="tumbler-pin-indicator text-critical" id="tumbler-pin-indicator">● TUMBLERS DISALIGNED</span>
+                <span class="tumbler-button-label" id="tumbler-button-label">DEPRESS MECHANICAL RELEASE DETENT</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="station-notes-sidebar font-mono">
+          <div class="note-card">
+            <span class="note-tag">TUMBLER COUPLING:</span>
+            <p>The mechanical gate aligns to coordinates derived from the facility incident timestamp recorded in the archive logs.</p>
+          </div>
+          <div class="note-card note-clue">
+            <span class="note-tag text-amber">CORRESPONDENCE CLUE:</span>
+            <p>Notice the time at which all communication was permanently severed on Level -03.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION 04: FACILITY ARCHIVE TERMINAL -->
+  <div class="inspection-overlay" id="station-terminal" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card terminal-card-expanded">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 04 // MAINFRAME TELEMETRY</span>
+          <h3 class="station-title">FACILITY 17 CRT ARCHIVE TERMINAL</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-terminal">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body terminal-body-layout">
+        <div class="crt-monitor-frame">
+          <div class="crt-glass font-mono">
+            <div class="crt-scanline-mesh"></div>
+            <div class="crt-screen-content">
+              <div class="terminal-os-header">
+                <span>FACILITY ARCHIVE // OS-VER 2.4.1</span>
+                <span>CLEARANCE: LEVEL 4 ACCESS</span>
+              </div>
+
+              <!-- Terminal Split View: File Index & Content Viewer -->
+              <div class="terminal-split-view">
+                <div class="terminal-file-tree">
+                  <div class="tree-title">[ STORED ARCHIVE LOGS ]</div>
+                  <button class="term-file-link active" data-file="log1">&gt; 1978_SPEC_B07.LOG</button>
+                  <button class="term-file-link" data-file="log2">&gt; 1984_CONTAINMENT.LOG</button>
+                  <button class="term-file-link" data-file="log3">&gt; INCIDENT_0317.LOG</button>
+                  <button class="term-file-link" data-file="log4">&gt; FINAL_DISPOSITION.LOG</button>
+                </div>
+
+                <div class="terminal-viewer-window">
+                  <div class="viewer-header" id="term-file-title">1978_SPEC_B07.LOG // VAULT CONSTRUCTION</div>
+                  <div class="viewer-body" id="term-file-body">
+                    <!-- Dynamic Log Content -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="terminal-os-footer">
+                <span>KEYBOARD READY</span>
+                <span class="cursor-blink">_</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION 05: STAMPED SPECIFICATION PLACARD -->
+  <div class="inspection-overlay" id="station-plate" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 05 // ARCHIVAL HARDWARE</span>
+          <h3 class="station-title">STAMPED BRASS SPECIFICATION PLACARD</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-plate">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body station-grid">
+        <div class="station-interactive-panel">
+          <div class="brass-placard-chassis font-mono">
+            <div class="placard-rivet r-tl"></div>
+            <div class="placard-rivet r-tr"></div>
+            <div class="placard-rivet r-bl"></div>
+            <div class="placard-rivet r-br"></div>
+
+            <div class="placard-engraving">
+              <div class="placard-headline">FACILITY 17 &bull; HEAVY CONTAINMENT CELL B</div>
+              <div class="placard-rule"></div>
+              
+              <div class="placard-specs-grid">
+                <div class="spec-cell">
+                  <span class="spec-lbl">SERIAL NO:</span>
+                  <span class="spec-v">V17-7429-LVL3</span>
+                </div>
+                <div class="spec-cell">
+                  <span class="spec-lbl">OPERATING PSI:</span>
+                  <span class="spec-v text-amber font-bold">47 PSI EXACT</span>
+                </div>
+                <div class="spec-cell">
+                  <span class="spec-lbl">VALVE PRIMING:</span>
+                  <span class="spec-v">SEQ: [ B ] &rarr; [ A ] &rarr; [ C ]</span>
+                </div>
+                <div class="spec-cell">
+                  <span class="spec-lbl">TUMBLER COORD:</span>
+                  <span class="spec-v text-amber font-bold">31 - 07</span>
+                </div>
+              </div>
+
+              <div class="placard-rule"></div>
+              <div class="placard-warning-stamp text-critical">
+                WARNING: EXCAVATION SPECIMEN ISOLATION ACTIVE. PERIMETER LOCKDOWN SYSTEM OPERATES INDEPENDENTLY FROM EXTERNAL GRID. DO NOT UNSEAL WITHOUT CLASS-A BREATHING APPARATUS.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="station-notes-sidebar font-mono">
+          <div class="note-card">
+            <span class="note-tag">PHYSICAL EVIDENCE:</span>
+            <p>The brass plate shows deep mechanical tool gouges around the tumbler coordination index.</p>
+          </div>
+          <div class="note-card note-clue">
+            <span class="note-tag text-amber">EQUILIBRIUM NOTE:</span>
+            <p>Ensure Valve B is primed first, followed by A, then C, until the pressure stabilizes at exactly 47 PSI.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATION 06: MAIN VAULT WHEEL & FINAL VERDICT -->
+  <div class="inspection-overlay" id="station-wheel" aria-hidden="true">
+    <div class="inspection-backdrop"></div>
+    <div class="station-card">
+      <div class="station-header">
+        <div class="station-header-meta font-mono">
+          <span class="station-code">STATION 06 // PORTAL APERTURE</span>
+          <h3 class="station-title">CENTRAL VAULT HANDWHEEL &amp; DOG CLAMPS</h3>
+        </div>
+        <button class="btn-station-close font-mono" data-close="station-wheel">[ ESC / RETURN ]</button>
+      </div>
+
+      <div class="station-body station-grid">
+        <div class="station-interactive-panel">
+          <div class="main-wheel-chassis font-mono">
+            <div class="center-massive-wheel-wrap">
+              <button class="massive-steel-wheel" id="btn-massive-wheel" title="Click and Drag or Press to Rotate Vault Wheel">
+                <div class="massive-spoke ms-1"></div>
+                <div class="massive-spoke ms-2"></div>
+                <div class="massive-spoke ms-3"></div>
+                <div class="massive-wheel-hub font-mono">
+                  <span>VAULT 17</span>
+                  <span class="hub-status-text" id="wheel-hub-status">SEALED</span>
+                </div>
+              </button>
+            </div>
+
+            <!-- Final Dual Decision Strip -->
+            <div class="final-decisions-strip font-mono" id="final-decisions-strip">
+              <div class="decision-box-prompt text-dim">
+                ALL 3 MECHANICAL LOCKS MUST DISENGAGE BEFORE THE WHEEL CAN BE OPERATED.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="station-notes-sidebar font-mono">
+          <div class="note-card">
+            <span class="note-tag">LOCK INTEGRITY:</span>
+            <div class="lock-checklist">
+              <div id="check-hyd">[-] Hydraulic Pins: Engaged</div>
+              <div id="check-volt">[-] Solenoid Circuit: Unpowered</div>
+              <div id="check-tumb">[-] Tumbler Gate: Disaligned</div>
+            </div>
+          </div>
+          <div class="note-card text-warning">
+            <span class="note-tag">WARNING:</span>
+            <p>Once all locks are disengaged, rotating this wheel withdraws the 12 radial steel locking bolts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       05. MULTIPLE CINEMATIC ENDING MODALS
+       ========================================================================== -->
+  <div class="ending-modal" id="ending-modal" aria-hidden="true">
+    <div class="ending-backdrop"></div>
+    <div class="ending-card font-mono">
+      <div class="ending-tag" id="ending-tag">ENDING 01 // ARCHIVE UNSEALED</div>
+      <h2 class="ending-title" id="ending-title">THE UNSEALED</h2>
+      <div class="ending-divider"></div>
+      <p class="ending-body" id="ending-body">
+        The heavy steel handwheel completed three revolutions. With a hollow, deafening clunk, the twelve radial locking bolts slid inward. The four-ton door parted by two inches, releasing a cold, stale subterranean draft that smelled of iron, sulfur, and ancient preservation saline. You peer into the black void of Vault 17.
+      </p>
+      <div class="ending-stats-grid">
+        <div class="stat-cell">
+          <span class="stat-lbl">FACILITY TIME</span>
+          <span class="stat-val font-bold" id="end-time">03:22 AM</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-lbl">CLUES CONNECTED</span>
+          <span class="stat-val font-bold">5 / 5</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-lbl">SEAL OUTCOME</span>
+          <span class="stat-val font-bold text-amber" id="end-outcome">BREACHED</span>
+        </div>
+      </div>
+      <div class="ending-actions">
+        <button class="btn-vault btn-vault-primary" id="btn-replay-game">EXPLORE ALTERNATE RESOLUTION</button>
+        <button class="btn-vault" id="btn-return-menu">RETURN TO TITLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       06. SETTINGS MODAL
+       ========================================================================== -->
+  <div class="settings-modal" id="settings-modal" aria-hidden="true">
+    <div class="settings-backdrop"></div>
+    <div class="settings-card font-mono">
+      <div class="settings-header">
+        <h3>TERMINAL CONFIGURATION</h3>
+        <button class="btn-station-close" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="settings-body">
+        <div class="cfg-row">
+          <label for="cfg-master-vol">MASTER SYNTHESIZER VOLUME</label>
+          <input type="range" id="cfg-master-vol" min="0" max="100" value="80">
+        </div>
+        <div class="cfg-row">
+          <label for="cfg-sfx-vol">MECHANICAL SFX (CLICKS / HISS)</label>
+          <input type="range" id="cfg-sfx-vol" min="0" max="100" value="90">
+        </div>
+        <div class="cfg-row">
+          <label for="cfg-amb-vol">SUBTERRANEAN AMBIENT HUM</label>
+          <input type="range" id="cfg-amb-vol" min="0" max="100" value="70">
+        </div>
+        <div class="cfg-row">
+          <label for="cfg-grain">FILM GRAIN &amp; CRT SCANLINES</label>
+          <input type="checkbox" id="cfg-grain" checked>
+        </div>
+        <div class="cfg-row">
+          <label for="cfg-motion">REDUCED MOTION</label>
+          <input type="checkbox" id="cfg-motion">
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="btn-vault" id="btn-clear-save">RESET PROGRESS ARCHIVE</button>
+        <button class="btn-vault btn-vault-primary" id="btn-save-cfg">APPLY &amp; CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       07. CREDITS MODAL
+       ========================================================================== -->
+  <div class="credits-modal" id="credits-modal" aria-hidden="true">
+    <div class="credits-backdrop"></div>
+    <div class="credits-card font-mono">
+      <div class="settings-header">
+        <h3>VAULT 17 // INCIDENT ARCHIVE</h3>
+        <button class="btn-station-close" id="btn-close-credits">&times;</button>
+      </div>
+      <div class="credits-body">
+        <p class="font-bold">VAULT 17 is a cinematic industrial puzzle and psychological mystery game.</p>
+        <p>Built strictly with pure HTML5, CSS3, and Vanilla JavaScript. Zero external bundlers, zero external libraries.</p>
+        <div class="credits-sub">
+          <span>&bull; Visual benchmark: Heavy industrial bunker engineering &amp; vintage vault mechanics</span><br>
+          <span>&bull; Real-time physical audio synthesis via Web Audio API</span><br>
+          <span>&bull; Multiple narrative endings &amp; non-linear puzzle deduction</span>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="btn-vault" id="btn-dismiss-credits">CLOSE ARCHIVE</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
